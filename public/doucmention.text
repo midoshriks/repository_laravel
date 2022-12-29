@@ -1,0 +1,115 @@
+create project laravel => composer create-project laravel/laravel:^8.* Mido_SoftWare ;
+
+create datebase = software;
+
+incloud ui laravel or make auth laravel = [
+    composer require laravel/ui:^3.2
+    php artisan ui bootstrap --auth
+    npm install && npm run dev
+    npm install resolve-url-loader@^5.0.0 --save-dev --legacy-peer-deps
+    npm run dev
+];
+
+create spaite medialibrary => composer require "spatie/laravel-medialibrary:^8.0.0" ;
+    sutep [
+        php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="migrations"
+
+        add in migrate table [
+                /**
+                * Reverse the migrations.
+                */
+                public function down()
+                {
+                    Schema::dropIfExists('media');
+                }
+        ]
+
+        php artisan migrate
+
+        php artisan vendor:publish --provider="Spatie\MediaLibrary\MediaLibraryServiceProvider" --tag="config"
+    ]
+
+create spaite backup => composer require spatie/laravel-backup:^7.* ;
+    sutep [
+        php artisan vendor:publish --provider="Spatie\Backup\BackupServiceProvider"
+    ]
+    add in file datebase [
+        in function mysql [
+                //mido backup
+                'dump' => [
+                    'dump_binary_path' => 'C:/xampp/mysql/bin/', // only the path, so without `mysqldump` or `pg_dump`
+                    'use_single_transaction',
+                    'timeout' => 60 * 5, // 5 minute timeout
+                ],
+        ]
+    ]
+    add in filesystme [
+            'backup' => [
+            'driver' => 'local',
+            'root' => public_path('backup'),
+            'url' => env('APP_URL') . '/backup',
+            'visibility' => 'public',
+            ],
+
+        and make folder in public project backup
+     ]
+    run [
+        php artisan backup:run
+    ]
+
+create laratrest => one kes go to link : https://laratrust.santigarcor.me/docs/6.x/installation.html;
+    or [
+        composer require santigarcor/laratrust
+        php artisan vendor:publish --tag="laratrust"
+        php artisan config:clear
+        php artisan laratrust:setup
+        composer dump-autoload
+        php artisan migrate
+    ]
+
+    and [
+        php artisan laratrust:seeder
+        php artisan vendor:publish --tag="laratrust-seeder"
+        composer dump-autoload
+        add in datasedeer =  $this->call(LaratrustSeeder::class);
+    ]
+
+create intervention/image => composer require intervention/image
+    or get to link : https://image.intervention.io/v2/introduction/installation;
+    add in file app.php [
+        $providers = Intervention\Image\ImageServiceProvider::class,
+        $aliases = 'Image' => Intervention\Image\Facades\Image::class,
+    ]
+    php artisan vendor:publish --provider="Intervention\Image\ImageServiceProviderLaravelRecent"
+
+    use Example {
+        // usage inside a laravel route
+            Route::get('/', function() {
+            $img = Image::make('foo.jpg')->resize(300, 200);
+            return $img->response('jpg');
+            });
+    }
+
+create function lang go to link https://github.com/mcamara/laravel-localization;
+    or [
+        composer require mcamara/laravel-localization
+        php artisan vendor:publish --provider="Mcamara\LaravelLocalization\LaravelLocalizationServiceProvider"
+
+        add file karnel [
+                /**** OTHER MIDDLEWARE ****/
+            'localize'                => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRoutes::class,
+            'localizationRedirect'    => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationRedirectFilter::class,
+            'localeSessionRedirect'   => \Mcamara\LaravelLocalization\Middleware\LocaleSessionRedirect::class,
+            'localeCookieRedirect'    => \Mcamara\LaravelLocalization\Middleware\LocaleCookieRedirect::class,
+            'localeViewPath'          => \Mcamara\LaravelLocalization\Middleware\LaravelLocalizationViewPath::class
+        ]
+
+        add in route {
+            Route::group(
+                    [
+                        'prefix' => LaravelLocalization::setLocale(),
+                        'middleware' => [ 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath' ]
+                    ], function(){ //...
+                });
+        }
+    ]
