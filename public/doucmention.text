@@ -113,3 +113,22 @@ create function lang go to link https://github.com/mcamara/laravel-localization;
                 });
         }
     ]
+
+create helper function {
+    one : get folder "Helpers" move in folder "app";
+    two : write in composer.json in "autoload"{
+        "files": [
+            "app/Helpers/Helpers.php"
+        ]
+    };
+    3 : wirte in file "app" App\Providers\HelperProvider::class, ;
+    4 : make model Language  [
+            public $timestamps = false;
+        protected $guarded = [];
+    ];
+    5 : wirte in table Language [
+            public $timestamps = false;
+            protected $guarded = [];
+    ];
+
+}
