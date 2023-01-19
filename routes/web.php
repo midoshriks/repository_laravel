@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\DemoController;
 use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
 /*
@@ -29,5 +30,6 @@ Route::group(
     ],
     function () { //...
         Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+        Route::get('/{page}', [DemoController::class, 'index']);
     }
 );
